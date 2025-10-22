@@ -1,0 +1,22 @@
+{
+  "boards": [
+    {
+      "id": "123",
+      "name": "Development",
+      "description": "Development team board"
+    },
+    {
+      "id": "456",
+      "name": "Testing",
+      "description": "QA and testing board"
+    },
+    {
+      "id": "789",
+      "name": "Product",
+      "description": "Product management board"
+    }
+  ],
+  "refreshInterval": 60,
+  "jiraURL": "https://your-company.atlassian.net",
+  "projectKey": "PROJ"
+}

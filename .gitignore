@@ -1,0 +1,21 @@
+# Binaries
+jira-boards-tui
+jira-tui
+*.exe
+
+# State files
+*-state.json
+*.backup
+
+# Debug files
+debug*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
