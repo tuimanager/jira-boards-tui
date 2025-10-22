@@ -45,8 +45,7 @@ Create a `config.json` file:
     }
   ],
   "refreshInterval": 60,
-  "jiraURL": "https://your-company.atlassian.net",
-  "projectKey": "PROJ"
+  "jiraURL": "https://your-company.atlassian.net"
 }
 ```
 

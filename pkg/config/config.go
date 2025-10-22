@@ -16,7 +16,6 @@ type Config struct {
 	Boards          []Board `json:"boards"`
 	RefreshInterval int     `json:"refreshInterval"`
 	JiraURL         string  `json:"jiraURL"`
-	ProjectKey      string  `json:"projectKey"`
 }
 
 func LoadConfig(filename string) (*Config, error) {
