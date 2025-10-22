@@ -45,7 +45,55 @@ Create a `config.json` file:
     }
   ],
   "refreshInterval": 60,
-  "jiraURL": "https://your-company.atlassian.net"
+  "jiraURL": "https://your-company.atlassian.net",
+  "workflow": {
+    "autoDetect": false,
+    "columns": ["Open", "Blocked", "In Progress", "Code Review", "Ready for Test", "In Testing", "Tested", "Done"],
+    "statusMapping": [
+      {
+        "column": "Open",
+        "statuses": ["Open", "To Do", "Backlog", "Reopen", "Reopened"]
+      },
+      {
+        "column": "In Progress", 
+        "statuses": ["In Progress", "In Development"]
+      }
+    ]
+  }
+}
+```
+
+### Workflow Configuration
+
+The `workflow` section allows you to customize status columns:
+
+- **`autoDetect`**: Set to `true` to automatically detect statuses from your Jira issues
+- **`columns`**: Array of column names in display order  
+- **`statusMapping`**: Maps Jira statuses to display columns
+
+#### Auto-Detection Mode
+```json
+{
+  "workflow": {
+    "autoDetect": true
+  }
+}
+```
+
+#### Custom Workflow Example  
+```json
+{
+  "workflow": {
+    "autoDetect": false,
+    "columns": ["Backlog", "In Progress", "Review", "Testing", "Done"],
+    "statusMapping": [
+      {"column": "Backlog", "statuses": ["Open", "To Do", "New"]},
+      {"column": "In Progress", "statuses": ["In Progress", "Development"]},
+      {"column": "Review", "statuses": ["Code Review", "Peer Review"]},
+      {"column": "Testing", "statuses": ["Testing", "QA", "Verification"]},
+      {"column": "Done", "statuses": ["Done", "Resolved", "Completed"]}
+    ]
+  }
 }
 ```
 
@@ -100,15 +148,20 @@ The TUI displays:
 
 ## Status Mapping
 
-The application maps various Jira statuses to standard columns:
-- **Open**: Open, To Do, Backlog
-- **Blocked**: Blocked, Impediment  
-- **In Progress**: In Progress, Development
-- **Code Review**: Code Review, Review
-- **Ready for Test**: Ready for Test, RFT
-- **In Testing**: In Testing, Testing
-- **Tested**: Tested, Verified
-- **Done**: Done, Resolved
+Status columns are now fully configurable via the `workflow` section in `config.json`. 
+
+### Default Mapping
+- **Open**: Open, To Do, Backlog, Reopen, Reopened
+- **Blocked**: Blocked
+- **In Progress**: In Progress, In Development
+- **Code Review**: Code Review, Review, Pull Request
+- **Ready for Test**: Ready for Test, Ready for Testing, QA Ready
+- **In Testing**: In Testing, Testing, QA
+- **Tested**: Tested, QA Done, QA Complete
+- **Done**: Done, Resolved, Complete
+
+### Customization
+You can customize columns and status mappings in your `config.json` or enable `autoDetect: true` to automatically discover statuses from your Jira instance.
 
 ## Requirements
 

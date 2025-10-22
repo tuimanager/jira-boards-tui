@@ -17,5 +17,52 @@
     }
   ],
   "refreshInterval": 60,
-  "jiraURL": "https://your-company.atlassian.net"
+  "jiraURL": "https://your-company.atlassian.net",
+  "workflow": {
+    "autoDetect": false,
+    "columns": [
+      "Open",
+      "Blocked", 
+      "In Progress",
+      "Code Review",
+      "Ready for Test",
+      "In Testing",
+      "Tested",
+      "Done"
+    ],
+    "statusMapping": [
+      {
+        "column": "Open",
+        "statuses": ["Open", "To Do", "Backlog", "Reopen", "Reopened"]
+      },
+      {
+        "column": "Blocked", 
+        "statuses": ["Blocked"]
+      },
+      {
+        "column": "In Progress",
+        "statuses": ["In Progress", "In Development"]
+      },
+      {
+        "column": "Code Review",
+        "statuses": ["Code Review", "Review", "Pull Request"]
+      },
+      {
+        "column": "Ready for Test",
+        "statuses": ["Ready for Test", "Ready for Testing", "QA Ready"]
+      },
+      {
+        "column": "In Testing",
+        "statuses": ["In Testing", "Testing", "QA"]
+      },
+      {
+        "column": "Tested",
+        "statuses": ["Tested", "QA Done", "QA Complete"]
+      },
+      {
+        "column": "Done",
+        "statuses": ["Done", "Resolved", "Complete"]
+      }
+    ]
+  }
 }

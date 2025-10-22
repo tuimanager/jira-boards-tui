@@ -270,17 +270,13 @@ func (app *TUIApp) layout(g *gocui.Gui) error {
 }
 
 func (app *TUIApp) getAllStatuses(issues []jira.Issue) []string {
-	// Predefined order of statuses we want to show
-	wantedStatuses := []string{
-		"Open",
-		"Blocked",
-		"In Progress", 
-		"Code Review",
-		"Ready for Test",
-		"In Testing",
-		"Tested",
-		"Done",
+	// Auto-detect workflow if enabled
+	if app.config.Workflow.AutoDetect {
+		return app.autoDetectWorkflow(issues)
 	}
+	
+	// Use configured columns
+	wantedStatuses := app.config.Workflow.Columns
 	
 	// Check which statuses actually exist in the data (with mapping)
 	statusExists := make(map[string]bool)
@@ -301,29 +297,55 @@ func (app *TUIApp) getAllStatuses(issues []jira.Issue) []string {
 }
 
 func (app *TUIApp) mapStatusToGroup(status string) string {
-	// Map various status names to our standard groups
-	switch status {
-	case "Reopen", "Reopened", "To Do", "Backlog":
-		return "Open"
-	case "Blocked":
-		return "Blocked" // Separate column for blocked items
-	case "In Progress", "In Development":
-		return "In Progress"
-	case "Code Review", "Review", "Pull Request":
-		return "Code Review"
-	case "Ready for Test", "Ready for Testing", "QA Ready":
-		return "Ready for Test"
-	case "In Testing", "Testing", "QA":
-		return "In Testing"
-	case "Tested", "QA Done", "QA Complete":
-		return "Tested"
-	case "Done", "Resolved", "Complete":
-		return "Done"
-	case "Closed":
-		return "Closed" // Will be filtered out
-	default:
-		return status // Keep original status if no mapping found
+	// Use configured status mapping
+	for _, mapping := range app.config.Workflow.StatusMapping {
+		for _, mappedStatus := range mapping.Statuses {
+			if status == mappedStatus {
+				return mapping.Column
+			}
+		}
 	}
+	
+	// Special case for Closed - always filter out
+	if status == "Closed" {
+		return "Closed"
+	}
+	
+	// Keep original status if no mapping found
+	return status
+}
+
+func (app *TUIApp) autoDetectWorkflow(issues []jira.Issue) []string {
+	// Collect all unique statuses from issues
+	statusCount := make(map[string]int)
+	for _, issue := range issues {
+		if issue.Fields.Status.Name != "Closed" {
+			statusCount[issue.Fields.Status.Name]++
+		}
+	}
+	
+	// Sort statuses by frequency (most common first)
+	type statusFreq struct {
+		Status string
+		Count  int
+	}
+	
+	var statuses []statusFreq
+	for status, count := range statusCount {
+		statuses = append(statuses, statusFreq{Status: status, Count: count})
+	}
+	
+	sort.Slice(statuses, func(i, j int) bool {
+		return statuses[i].Count > statuses[j].Count
+	})
+	
+	// Return just the status names
+	var result []string
+	for _, s := range statuses {
+		result = append(result, s.Status)
+	}
+	
+	return result
 }
 
 func (app *TUIApp) updateHeader(v *gocui.View) {
